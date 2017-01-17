@@ -1,0 +1,26 @@
+	function Row_Inserted($rsold, &$rsnew) {
+	$sShift = ew_ExecuteScalar("SELECT Shift FROM shift WHERE id='".$rsnew["Shift"]."'");
+			$iFact_code = ew_ExecuteScalar("SELECT FactCode FROM Plant WHERE Kode='".$rsnew["Site"]."'");
+		$datapengunjung = array("factory" => $iFact_code, "visit_date" =>  $rsnew["Tanggal"], "shift" => $sShift ,"institution_name" =>  $rsnew["Nama"], "status"=> 1); 
+		$data_string =json_encode(array($datapengunjung));
+		$data_string1 = "schds=" . $data_string ;
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_URL,"http://www.xxx.co.id/fxxxxxxx-api/schedule");
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+		curl_setopt($ch, CURLOPT_USERPWD, "A_API:9iuyjki");
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POST, 1 ); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS,   $data_string1  );
+		curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
+		//execute post
+		$result = curl_exec($ch);
+
+		//close connection
+		curl_close($ch);
+		echo $result;
+		$this->setSuccessMessage("  ".$result." ");
+		}
